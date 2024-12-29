@@ -1,5 +1,6 @@
-package io.ypolin.gecon.mongo;
+package io.ypolin.gecon.mongo.domain;
 
+import io.ypolin.gecon.service.checksum.Checksum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +14,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Document("citation")
-public class Citation {
+public class Citation extends ChecksumAware {
     @Id
     private String id;
+    @Checksum
     private String text;
     private String author;
     private String aboutAuthor;
@@ -23,14 +25,4 @@ public class Citation {
     private String category;
     @Indexed
     private LocalDateTime generatedAt;
-    private String checksum;
-
-    public Citation(String text, String author, String aboutAuthor, String category, LocalDateTime generatedAt, String checksum) {
-        this.text = text;
-        this.author = author;
-        this.aboutAuthor = aboutAuthor;
-        this.category = category;
-        this.generatedAt = generatedAt;
-        this.checksum = checksum;
-    }
 }

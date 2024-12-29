@@ -1,43 +1,44 @@
 package io.ypolin.gecon.ai;
 
+import io.ypolin.gecon.ai.domain.MultiItemGeneratedResponse;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
-public abstract class ContentGenerator<Content> {
+public class ContentGenerator<Content>{
 
     private final ChatClient chatClient;
+    private ContentGeneratorConfigurer<Content> configurer;
 
-    public ContentGenerator(ChatClient.Builder chatClientBuilder) {
+    public ContentGenerator(ChatClient.Builder chatClientBuilder, ContentGeneratorConfigurer<Content> configurer) {
+
         this.chatClient = chatClientBuilder.build();
+        this.configurer = configurer;
     }
 
-    public Content generateContent(String about) {
-        Content result = chatClient.prompt()
+    public MultiItemGeneratedResponse<Content> generateContent(String about, int numberOfItems) {
+        MultiItemGeneratedResponse<Content> response = chatClient.prompt()
                 .advisors(new SimpleLoggerAdvisor())
                 .system(systemSpec -> systemSpec
-                        .text(randomizeSystemMessage())
-                        .params(systemMessageTemplateParams()))
+                        .text(adjustSystemMessage(numberOfItems)))
+
+
                 .user(about)
                 .call()
-                .entity(getDataType());
-        return result;
+                .entity(configurer.getTypeReference());
+        return response;
     }
 
-    private String randomizeSystemMessage() {
-        String systemMessage = systemMessage();
+    private String adjustSystemMessage(int numberOfItems) {
+        String systemMessage = configurer.defineSystemPrompt();
         if (systemMessage == null) {
-            throw new IllegalStateException("System message to AI is not defined");
+            throw new IllegalStateException("System message to AI is not defined.");
         }
-        return systemMessage.concat("As of" + LocalDateTime.now());
+        StringBuilder sb  = new StringBuilder(systemMessage);
+        sb.append(String.format("You should provide %d items.", numberOfItems));
+        sb.append("As of" + LocalDateTime.now());
+        return sb.toString();
     }
-
-    public abstract String systemMessage();
-
-    public abstract Map<String, Object> systemMessageTemplateParams();
-
-    public abstract Class<Content> getDataType();
 
 }

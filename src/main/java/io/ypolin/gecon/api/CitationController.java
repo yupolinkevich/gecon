@@ -2,6 +2,7 @@ package io.ypolin.gecon.api;
 
 import io.ypolin.gecon.dto.CitationDTO;
 import io.ypolin.gecon.service.CitationService;
+import io.ypolin.gecon.service.ContentPopulator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -11,14 +12,18 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/citations")
-public class ContentGenerationController {
+public class CitationController {
     @Autowired
     private CitationService citationService;
+
+    @Autowired
+    private ContentPopulator citationPopulator;
 
     @PostMapping("/generate")
     @ResponseStatus(value = HttpStatus.OK)
     public void populateWithFreshContent(@RequestParam String category) {
-        citationService.populateCitations(category.toLowerCase());
+        citationPopulator.populateWithContent(category,10);
+//        citationService.populateCitations(category.toLowerCase());
     }
 
     @GetMapping()
