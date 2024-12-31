@@ -12,7 +12,7 @@ This application facilitates the generation of homogeneous content (e.g., citati
   - content deduplication based on checksums 
   - a bit of randomization to prompt 
 
----
+
 
 ## Technologies Used
 
@@ -24,7 +24,7 @@ This application facilitates the generation of homogeneous content (e.g., citati
 - **MongoDB Atlas**
 
 
----
+
 ## Modules
 
 ### 1. generator
@@ -38,10 +38,10 @@ This module demonstrates the usage of generator on such domains:
 - **Citations**: AI-generated quotes for the provided topic.
 - **Tourist Spots**: AI-generated lists of places to visit for the provided city.
 
----
+
 ## Prerequisites
 
 - Java 17 and above installed.
 - MongoDB Atlas account and database configured.
 - OpenAI API key.
-----
+
